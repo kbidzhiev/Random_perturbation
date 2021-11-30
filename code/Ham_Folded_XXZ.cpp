@@ -23,10 +23,9 @@ void ThreeSiteHamiltonian::init(const ThreeSiteParam &param) {
 	const double hL = param.val("hL");
 	const double hR = param.val("hR");
 	int shift_of_range = 0;
-	if (PPK != 0) shift_of_range = 1;
 	dot = N / 2 + 1;  //Position of the "dot"
 	cout << "The dot is on site #" << dot << endl;
-	for (int j = 1; j < N - 1 - shift_of_range; ++j) {
+	for (int j = 1; j < N -1; ++j) {
 		//Strange coefficients are needed to match
 		// spin matrices and Pauli matrices -> Pauli = 2*Spin, so each matrix gives factor 2
 		// one of 1/2 comes from the projector (1-sigma_z)/2
