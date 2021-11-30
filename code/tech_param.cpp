@@ -79,35 +79,20 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("sweeps") = 999;  //maximum number of sweeps in the DMRG
 	operator[]("TrotterOrder") = 2;
 	operator[]("GroundState") = 0;
-	operator[]("LadderState") = 0;
-	operator[]("JammedImpurity") = 0;
-	operator[]("alpha") = 0; // U = exp[ i alpha  n*\sigma]
 	operator[]("UUU") = 1;
-	operator[]("UUD2") = 0;
 	operator[]("hL") = 0; //initial magnetization_L
 	operator[]("hR") = 0; //initial magnetization_R
 	operator[]("h") = 0.0;
 	operator[]("rho") = 0.0;
 	operator[]("n") = 1;
-	operator[]("Q1Profile") = 0; // energy and current profile
-	operator[]("Q2Profile") = 0;
-	operator[]("Current") = 0;
-	operator[]("Entropy") = 0; //entanglement entropy p*log*p between left and right parts of system
-	operator[]("EntropyProfile") = 0; // Entropy Profile- parameter 0 -> nothing, dt>0 each second=integer parameter
-	operator[]("Loschmidt") = 0; // loschmidt echo <psi(t)|psi(0)>
-	operator[]("Dhar") = 0; // Deepak Dhar term in hamiltonian (time evolution ONLY)
-	operator[]("PXXP") = 0; //Integrability breaking term
-	operator[]("Measurement") = 0; // Project the central spin to be |Down> (time evolution ONLY)
+	operator[]("Q1Profile") = 0.1; // energy and current profile
+	operator[]("Q2Profile") = 0.1;
+	operator[]("Entropy") = 1; //entanglement entropy p*log*p between left and right parts of system
+	operator[]("EntropyProfile") = 0.1; // Entropy Profile- parameter 0 -> nothing, dt>0 each second=integer parameter
+	operator[]("Loschmidt") = 0.1; // loschmidt echo <psi(t)|psi(0)>
 	operator[]("TrotterOrderXXZ") = 3;
 	operator[]("XXZ") = 1;
-	operator[]("XXZGlobal") = 0;
-	operator[]("XXZDW") = 0;
-	operator[]("Delta") = 0;
-	operator[]("Distance") = 5;
-	operator[]("Neel") = 0;
-	operator[]("XP") = 0;
-	operator[]("PPK") = 0;
-	operator[]("PPX") = 0;
+	operator[]("Delta") = 2;
 }
 
 
