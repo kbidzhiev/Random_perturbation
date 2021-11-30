@@ -51,18 +51,6 @@ private:
 };
 
 
-class LadderHamiltonian {
-public:
-	int dot;
-	AutoMPO ampo;
-	//Define a constructor for this class 'LadderHamiltonian'
-	LadderHamiltonian(const SiteSet &sites, const ThreeSiteParam &param, const string ham_type_);
-private:
-	int N;
-	const string ham_type;
-	void init(const ThreeSiteParam &param);
-};
-
 //I'm creating a Folded XXZ 3-site Hamiltonian
 class XXZ {
 public:
@@ -74,20 +62,6 @@ private:
 	void init(const ThreeSiteParam &param);
 };
 
-////// XP model
-class XP_Hamiltonian{
-public:
-	int dot;
-	AutoMPO ampo;
-	XP_Hamiltonian(const SiteSet &sites, const ThreeSiteParam &param);
-private:
-	int N;
-	void init(const ThreeSiteParam &param);
-};
-
-
-
-vector<MPO> XP_time_evol(const SiteSet &sites, const ThreeSiteParam &param);
 
 
 
@@ -116,51 +90,6 @@ vector<MPO> XXZ_time_evol(const SiteSet &sites, const ThreeSiteParam &param);
 
 
 
-
-// Trotter Gates for prepearing an initial state
-//https://scipost.org/SciPostPhysCore.4.2.010/pdf
-// Eq 66
-class Exp_B {
-public:
-	struct TGate {
-		int i1 = 0;
-		ITensor G;
-		TGate(int i1_, ITensor G_)
-		: i1(i1_)
-		, G(G_) {
-		}
-	};
-	Exp_B(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
-	void initialize(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
-	void TimeGates(const int begin, const int end, const complex<double> tau,
-			const SiteSet &sites, const ThreeSiteParam &param);
-	void Evolve(MPS &psi, const Args &args) ;
-private:
-	vector<TGate> gates;
-};
-
-
-
-
-//Trotter Gates for the time evolution of Folded_XXZ + (1-Z)(1-Z)(SpSm+SmSp)
-class TrotterExp_PPK {
-public:
-	struct TGate {
-		int i1 = 0;
-		ITensor G;
-		TGate(int i1_, ITensor G_)
-		: i1(i1_)
-		, G(G_) {
-		}
-	};
-	TrotterExp_PPK(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
-	void initialize(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
-	void TimeGates(const int begin, const int end, const complex<double> tau,
-			const SiteSet &sites, const ThreeSiteParam &param);
-	void Evolve(MPS &psi, const Args &args) ;
-private:
-	vector<TGate> gates;
-};
 
 
 
