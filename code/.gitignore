@@ -1,0 +1,13 @@
+/out_1
+
+*.dat
+*.pdf
+/Entropy_profile.dat_cp
+/err
+/err_out
+/SxSySz_profile.dat_cp
+/fit.log
+/this_dir.mk
+/options.mk
+/Makefile_GR
+/Makefile_bckp
