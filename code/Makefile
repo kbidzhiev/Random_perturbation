@@ -29,7 +29,7 @@ LIBGFLAGS=-L$(ITENSOR_LIBDIR) $(ITENSOR_LIBGFLAGS)
 
 CPP_FILES = Random_perturbation.cpp tech_param.cpp time_evolution.cpp Ham_Folded_XXZ.cpp XXZ.cpp observables.cpp quantum_measurement.cpp
 
-Random_preturbation.exe: ${CPP_FILES} $(ITENSOR_LIBS) $(TENSOR_HEADERS)
+Random_perturbation.exe: ${CPP_FILES} $(ITENSOR_LIBS) $(TENSOR_HEADERS)
 	$(CCCOM) $(CCFLAGS) ${CPP_FILES} -o $@ $(LIBFLAGS)
 
 

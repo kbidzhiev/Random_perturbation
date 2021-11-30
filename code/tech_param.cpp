@@ -82,12 +82,8 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("LadderState") = 0;
 	operator[]("JammedImpurity") = 0;
 	operator[]("alpha") = 0; // U = exp[ i alpha  n*\sigma]
-	operator[]("UUD") = 0;
+	operator[]("UUU") = 1;
 	operator[]("UUD2") = 0;
-	operator[]("ShiftUUD") = 0;
-	operator[]("DoubleSlit") = 0;
-	operator[]("SingleSlit") = 0;
-	operator[]("begin") = 1;
 	operator[]("hL") = 0; //initial magnetization_L
 	operator[]("hR") = 0; //initial magnetization_R
 	operator[]("h") = 0.0;
@@ -103,7 +99,7 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("PXXP") = 0; //Integrability breaking term
 	operator[]("Measurement") = 0; // Project the central spin to be |Down> (time evolution ONLY)
 	operator[]("TrotterOrderXXZ") = 3;
-	operator[]("XXZ") = 0;
+	operator[]("XXZ") = 1;
 	operator[]("XXZGlobal") = 0;
 	operator[]("XXZDW") = 0;
 	operator[]("Delta") = 0;
