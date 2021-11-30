@@ -681,22 +681,11 @@ int main(int argc, char *argv[]) {
 
 			} else{
 				expH_Folded_XXZ.Evolve(psi, args);
-
 				cout << "Folded XXZ" << endl;
 			}
 			psi.orthogonalize(args);
 
 
-			// Hadamar gates act at time == "Measurement"
-			if(  (double)param.val("Measurement") > 0
-					&& n > 0
-					&& n  % (int)(param.val("Measurement")/param.val("tau")) == 0
-					){
-				//AlphaGate(N/2-1, -0.5);
-				cout << "TIME IS == \"Measurement\". I ACT WITH SigmaXGate GATES" << endl;
-				SigmaXGate(N/2-1);
-				psi.noPrime();
-			}
 
 			double sz_TOT = 0;
 			for (int i = 1; i <= N; i++) {
