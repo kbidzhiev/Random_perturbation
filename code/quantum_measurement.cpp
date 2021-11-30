@@ -1,5 +1,5 @@
 #include "itensor/all.h"
-#include "observables_GS.hpp"
+#include "observables.hpp"
 
 using namespace itensor;
 using namespace std;
@@ -11,34 +11,34 @@ using namespace std;
 
 
 
-MPS Measure(MPS& psi, const SiteSet &sites, const string op_name, const int j, Args args){
+void FlipSpin(MPS& psi, const SiteSet &sites, const int j, Args args){
+	auto l1 = Index(12,"l1");
+	auto l2 = Index(12,"l2");
+	auto s1 = Index(4,"s1");
+	auto s2 = Index(4,"s2");
 
-	AutoMPO Op_ampo(sites);
+	auto H = randomITensorC(s1,s2,prime(s1),prime(s2));
+	H = 0.5*(H+dag(swapTags(H,"0","1")));
 
-	if (op_name == "Energy"){
-		Op_ampo +=  4 * 0.25, "S+", j, "S-", j + 2; // 0.5 (SpSm+ SmSp) = SxSx + SySy
-		Op_ampo +=  4 * 0.25, "S-", j, "S+", j + 2;
-		Op_ampo += -8 * 0.25, "S+", j, "Sz", j + 1, "S-", j + 2;
-		Op_ampo += -8 * 0.25, "S-", j, "Sz", j + 1, "S+", j + 2;
+	auto [Q,D] = diagHermitian(H);
 
-		Op_ampo +=  4 * 0.25, "S+", j + 1, "S-", j + 3; // 0.5 (SpSm+ SmSp) = SxSx + SySy
-		Op_ampo +=  4 * 0.25, "S-", j + 1, "S+", j + 3;
-		Op_ampo += -8 * 0.25, "S+", j + 1, "Sz", j + 2, "S-", j + 3;
-		Op_ampo += -8 * 0.25, "S-", j + 1, "Sz", j + 2, "S+", j + 3;
-	} else if (op_name == "Sz"){
-		Op_ampo += 1.0, "Sz", j;
-		Op_ampo += 1.0, "Sz", j + 1;
-		Op_ampo += 1.0, "Sz", j + 2;
-		Op_ampo += 1.0, "Sz", j + 3;
-	} else if (op_name == "Staggered_Sz"){
-		Op_ampo += 1.0, "Sz", j;
-		Op_ampo += -1.0, "Sz", j + 1;
-		Op_ampo += 1.0, "Sz", j + 2;
-		Op_ampo += -1.0, "Sz", j + 3;
-	}
+	auto U = expHermitian(ITensor H);
 
-	auto Op = toMPO(Op_ampo);
-	psi = applyMPO(Op,psi,args);
-	return psi;
+	cout << U;
 
+//	auto j = gate.i1;
+//	auto &G = gate.G;
+//	psi.position(j);
+//	auto WF = psi(j) * psi(j + 1) * psi(j + 2);
+//	WF = G * WF;
+//	WF /= norm(WF);
+//	WF.noPrime();
+//	{
+//		auto [Uj1, Vj1] = factor(WF,
+//				{ siteIndex(psi, j), leftLinkIndex(psi, j) }, args);
+//		auto indR = commonIndex(Uj1, Vj1);
+//		auto [Uj2, Vj2] = factor(Vj1, { siteIndex(psi, j + 1), indR }, args);
+//		psi.set(j, Uj1);
+//		psi.set(j + 1, Uj2);
+//		psi.set(j + 2, Vj2);
 }

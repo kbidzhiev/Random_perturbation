@@ -11,4 +11,4 @@ using namespace std;
 
 
 
-MPS Measure(MPS& psi, const SiteSet &sites, const string op_name, const int j, Args args);
+void FlipSpin(MPS& psi, const SiteSet &sites, const int j, Args args);

@@ -1,5 +1,5 @@
 #include "itensor/all.h"
-#include "observables_GS.hpp"
+#include "observables.hpp"
 
 using namespace itensor;
 using namespace std;
