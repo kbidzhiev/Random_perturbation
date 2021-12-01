@@ -12,3 +12,6 @@
 /Makefile_GR
 /Makefile_bckp
 /.Makefile.swp
+../Data/*
+
+
