@@ -68,19 +68,6 @@ int main(int argc, char *argv[]) {
 	auto H0 = toMPO(Init_H.ampo);
 	double energy_initial = 0;
 
-
-
-	auto SigmaXGate = [&](int i) {
-		auto ind = sites(i);
-		auto indP = prime(sites(i));
-		auto Op = ITensor(ind, indP);
-		Op.set(ind(1), indP(1), 0);
-		Op.set(ind(1), indP(2), 1);
-		Op.set(ind(2), indP(1), 1);
-		Op.set(ind(2), indP(2), 0);
-		psi.setA(i, psi.A(i) * Op);
-	};
-
 	if (param.longval("GroundState") == 1) {
 		// GS of the initial Hamiltonian
 		cout << "initial state is GS" << endl;
@@ -122,7 +109,23 @@ int main(int argc, char *argv[]) {
 		psi = MPS(initState);
 		psi.noPrime();
 
-		FlipSpin(psi, sites, N/2, args);
+		auto HadamarGate = [&](int i) {
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Had = ITensor(ind, indP);
+			Had.set(ind(1), indP(1), ISqrt2);
+			Had.set(ind(1), indP(2), ISqrt2);
+			Had.set(ind(2), indP(1), ISqrt2);
+			Had.set(ind(2), indP(2), -ISqrt2);
+			psi.setA(i, psi.A(i) * Had);
+		};
+
+		for (int i = 1; i <= N; ++i){
+			HadamarGate(i);
+		}
+		psi.noPrime();
+
+		RandomUnitary2sites(psi, sites, N/2, args);
 
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;

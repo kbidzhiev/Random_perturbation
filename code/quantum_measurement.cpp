@@ -9,7 +9,7 @@ using namespace std;
 
 
 
-void FlipSpin(MPS& psi, const SiteSet &sites, const int j, Args args){
+void RandomUnitary2sites(MPS& psi, const SiteSet &sites, const int j, Args args){
 	auto j0 = siteIndex(psi, j);
 	auto j1 = siteIndex(psi, j+1);
 	auto T = randomITensor(j0,j1,prime(j0),prime(j1));

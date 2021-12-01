@@ -11,4 +11,4 @@ using namespace std;
 
 
 
-void FlipSpin(MPS& psi, const SiteSet &sites, const int j, Args args);
+void RandomUnitary2sites(MPS& psi, const SiteSet &sites, const int j, Args args);
