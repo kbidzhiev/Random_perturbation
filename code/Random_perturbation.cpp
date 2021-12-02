@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
 		}
 		psi.noPrime();
 
-		RandomUnitary2sites(psi, sites, N/2, args);
+		if(param.val("Perturb") > 0) RandomUnitary2sites(psi, sites, N/2, args);
 
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
