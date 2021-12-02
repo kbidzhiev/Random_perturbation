@@ -119,7 +119,6 @@ int main(int argc, char *argv[]) {
 			Had.set(ind(2), indP(2), -ISqrt2);
 			psi.setA(i, psi.A(i) * Had);
 		};
-
 		for (int i = 1; i <= N; ++i){
 			HadamarGate(i);
 		}
