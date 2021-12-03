@@ -21,6 +21,7 @@ XXZ::XXZ(const SiteSet &sites,
 //Initialize Hamiltonian parameters
 void XXZ::init(const ThreeSiteParam &param) {
 	const double J = param.val("J");
+	const double J2 = param.val("J2");
 	double mu = param.val("h");
 	const double hL = param.val("hL");
 	const double hR = param.val("hR");
@@ -38,6 +39,11 @@ void XXZ::init(const ThreeSiteParam &param) {
 		ampo += J * 4 * 0.5, "S+", j, "S-", j + 1; //
 		ampo += J * 4 * 0.5, "S-", j, "S+", j + 1;
 		ampo += J * 4 * Delta, "Sz", j, "Sz", j + 1;
+
+		if(j < N-1){
+		ampo += J2 * 4 , "Sz", j, "Sz", j + 2; // term from Balazs Pozsgay paper. This term 'strongly' breaks integrability
+		}
+
 		if (j <= dot) {
 			mu = hL;
 		} else {

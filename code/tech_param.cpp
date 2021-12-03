@@ -94,6 +94,7 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("XXZ") = 1;
 	operator[]("Delta") = 2;
 	operator[]("Perturb") = 1;
+	operator[]("J2") = 2.0;
 }
 
 
