@@ -337,6 +337,7 @@ int main(int argc, char *argv[]) {
 
 	const long int n_steps = param.val("T") / tau;
 	TrotterExp expH_Folded_XXZ(sites, param, -Cplx_i * tau);
+	TrotterExp expH_XXZ(sites, param, -Cplx_i * tau);
 	vector<MPO> XXZ_time_evol_vec = XXZ_time_evol(sites, param);
 
 
@@ -678,11 +679,13 @@ int main(int argc, char *argv[]) {
 			//MPS psi_temp = psi;
 			cout << "Time evol" << endl;
 			if(param.val("XXZ") > 0 ){
-				for(auto & expH_XXZ : XXZ_time_evol_vec)
-				psi = applyMPO(expH_XXZ, psi, args);
-				psi.noPrime();
-				cout << "XXZ" << endl;
+//				for(auto & expH_XXZ : XXZ_time_evol_vec)
+//				psi = applyMPO(expH_XXZ, psi, args);
+//				psi.noPrime();
+//				cout << "XXZ" << endl;
 
+				expH_XXZ.Evolve(psi, args);
+				cout << "XXZ" << endl;
 			} else{
 				expH_Folded_XXZ.Evolve(psi, args);
 				cout << "Folded XXZ" << endl;
