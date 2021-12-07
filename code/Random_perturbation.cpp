@@ -337,7 +337,7 @@ int main(int argc, char *argv[]) {
 
 	const long int n_steps = param.val("T") / tau;
 	TrotterExp expH_Folded_XXZ(sites, param, -Cplx_i * tau);
-	TrotterExp expH_XXZ(sites, param, -Cplx_i * tau);
+	TrotterExpXXZ expH_XXZ(sites, param, -Cplx_i * tau);
 	vector<MPO> XXZ_time_evol_vec = XXZ_time_evol(sites, param);
 
 
