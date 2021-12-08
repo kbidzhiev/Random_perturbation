@@ -77,7 +77,7 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("trunc") = 1e-8;  //maximum truncation error
 	operator[]("energy") = 1e-13;  //convergence criterium on the energy
 	operator[]("sweeps") = 999;  //maximum number of sweeps in the DMRG
-	operator[]("TrotterOrder") = 2;
+
 	operator[]("GroundState") = 0;
 	operator[]("UUU") = 1;
 	operator[]("hL") = 0; //initial magnetization_L
@@ -90,7 +90,8 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("Entropy") = 1; //entanglement entropy p*log*p between left and right parts of system
 	operator[]("EntropyProfile") = 0.1; // Entropy Profile- parameter 0 -> nothing, dt>0 each second=integer parameter
 	operator[]("Loschmidt") = 0.1; // loschmidt echo <psi(t)|psi(0)>
-	operator[]("TrotterOrderXXZ") = 3;
+	operator[]("TrotterOrderXXZ") = 0;
+	operator[]("TrotterOrder") = 2;
 	operator[]("XXZ") = 1;
 	operator[]("Delta") = 2;
 	operator[]("Perturb") = 1;
