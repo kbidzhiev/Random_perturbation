@@ -98,7 +98,7 @@ void TrotterExp::Evolve(MPS &psi, const Args &args) {
 					{ siteIndex(psi, j), leftLinkIndex(psi, j) }, args);
 			auto indR = commonIndex(Uj1, Vj1);
 			auto [Uj2, Vj2] = factor(Vj1, { siteIndex(psi, j + 1), indR }, args);
-			psi.set(j, Uj1);
+			psi.set(j, Uj1); // instead of copying I can move here??
 			psi.set(j + 1, Uj2);
 			psi.set(j + 2, Vj2);
 
@@ -251,7 +251,8 @@ void TrotterExpXXZ::TimeGates(const int begin, const int end,
 		gates.emplace_back(j, move(G));
 	}
 }
-void TrotterExpXXZ::Evolve(MPS &psi, const Args &args) {
+void TrotterExpXXZ::Evolve(MPS &psi, const Args &args1) {
+	const Args args("Truncate=", false);
 	for (auto &gate : gates) {
 		auto j = gate.i1;
 		auto &G = gate.G;
@@ -265,9 +266,9 @@ void TrotterExpXXZ::Evolve(MPS &psi, const Args &args) {
 					{ siteIndex(psi, j), leftLinkIndex(psi, j) }, args);
 			auto indR = commonIndex(Uj1, Vj1);
 			auto [Uj2, Vj2] = factor(Vj1, { siteIndex(psi, j + 1), indR }, args);
-			psi.set(j, Uj1);
-			psi.set(j + 1, Uj2);
-			psi.set(j + 2, Vj2);
+			psi.set(j, move(Uj1));
+			psi.set(j + 1, move(Uj2));
+			psi.set(j + 2, move(Vj2));
 
 		}
 	}

@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 	SpinHalf sites(N, { "ConserveQNs=", false }); // Creating a Hilbert space
 	MPS psi, psi0;
 	auto args = Args("Method=", "DensityMatrix", "Cutoff", param.val("trunc"),
-			"MaxDim", param.longval("max_bond"), "Normalize", true); // for FitApplyMPO RENAME
+			"MaxDim", param.longval("max_bond"), "Normalize", false); // for FitApplyMPO RENAME
 
 
 // Preparing an initial state
