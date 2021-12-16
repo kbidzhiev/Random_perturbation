@@ -163,9 +163,11 @@ int main(int argc, char *argv[]) {
 			psi.setA(i, psi.A(i) * Op);
 		};
 
-		if(param.val("Perturb") > 0)
+		if(param.val("Perturb") != 0)
+		{
+			cout << "spin is flipped" << endl;
 			SigmaXGate(N / 2);
-
+		}
 
 		psi.noPrime();
 	}else {
@@ -182,7 +184,7 @@ int main(int argc, char *argv[]) {
 	//Hamiltonian for the dynamics
 	ThreeSiteHamiltonian Ham(sites, param);
 	auto H = toMPO(Ham.ampo);
-	if(param.val("Tilted") > 0){
+	if(param.val("Tilted") != 0){
 		XY Ham(sites, param);
 		H = toMPO(Ham.ampo);
 	}
