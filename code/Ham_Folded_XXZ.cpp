@@ -74,7 +74,7 @@ void XY::init(const ThreeSiteParam &param) {
 		// and the other is "Jacobian", i.e. 0.5 (SpSm+ SmSp) = SxSx + SySy
 
 
-		ampo += Jx * 4 , "Sx", j, "Sx", j + 1; //
+		ampo += Jx * 4 , "Sx", j, "Sx", j + 2; //
 		ampo += -Jy * 8 , "Sx", j, "Sz", j + 1, "Sx", j + 2;
 
 
