@@ -109,6 +109,25 @@ private:
 };
 
 
+//Trotter Gates for the time evolution of XXZ
+class TrotterExpXY {
+public:
+	struct TGate {
+		int i1 = 0;
+		ITensor G;
+		TGate(int i1_, ITensor G_)
+		: i1(i1_)
+		, G(G_) {
+		}
+	};
+	TrotterExpXY(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
+	void initialize(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
+	void TimeGates(const int begin, const int end, const complex<double> tau,
+			const SiteSet &sites, const ThreeSiteParam &param);
+	void Evolve(MPS &psi, const Args &args) ;
+private:
+	vector<TGate> gates;
+};
 
 
 

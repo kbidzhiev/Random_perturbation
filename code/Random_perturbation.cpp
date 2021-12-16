@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 
 
 	} else if ( param.val("UUU") > 0 ) {
-		cout << "initial state is  |UUU> " << endl;
+		cout << "initial state is  |RRR> " << endl;
 		auto initState = InitState(sites);
 		for (int i = 1; i <= N; ++i){
 				initState.set(i, "Up");
@@ -127,7 +127,47 @@ int main(int argc, char *argv[]) {
 		if(param.val("Perturb") > 0) {
 			RandomUnitary2sites(psi, sites, N/2, args);
 		}
+	} else if (param.val("Tilted") > 0) {
+		cout << "initial state is  |RRR> " << endl;
+		auto initState = InitState(sites);
+		for (int i = 1; i <= N; ++i)
+			initState.set(i, "Up");
 
+		psi = MPS(initState);
+		psi.noPrime();
+
+		auto AlphaGate = [&](int i, const double alpha) {
+			// U = exp[i alpha (n*s)]; |n|^2==1, s = {sx,sy,sz}
+			// n = {0,1,0}
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Op = ITensor(ind, indP);
+			Op.set(ind(1), indP(1), cos(alpha));
+			Op.set(ind(1), indP(2), sin(alpha));
+			Op.set(ind(2), indP(1), -sin(alpha));
+			Op.set(ind(2), indP(2), cos(alpha));
+			psi.setA(i, psi.A(i) * Op);
+		};
+		for (int i = 1; i <= N; ++i)
+			AlphaGate(i, param.val("Tilted"));
+
+
+		auto SigmaXGate = [&](int i) {
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Op = ITensor(ind, indP);
+			Op.set(ind(1), indP(1), 0);
+			Op.set(ind(1), indP(2), 1);
+			Op.set(ind(2), indP(1), 1);
+			Op.set(ind(2), indP(2), 0);
+			psi.setA(i, psi.A(i) * Op);
+		};
+
+		if(param.val("Perturb") > 0)
+			SigmaXGate(N / 2);
+
+
+		psi.noPrime();
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
 		return 1;
@@ -338,6 +378,7 @@ int main(int argc, char *argv[]) {
 	const long int n_steps = param.val("T") / tau;
 	TrotterExp expH_Folded_XXZ(sites, param, -Cplx_i * tau);
 	TrotterExpXXZ expH_XXZ(sites, param, -Cplx_i * tau);
+	TrotterExpXXZ expH_XY(sites, param, -Cplx_i * tau);
 	vector<MPO> XXZ_time_evol_vec = XXZ_time_evol(sites, param);
 
 
@@ -689,7 +730,10 @@ int main(int argc, char *argv[]) {
 					expH_XXZ.Evolve(psi, args);
 					cout << "TEBD XXZ" << endl;
 				}
-			} else{
+			} else if (param.val("Tilted") > 0) {
+				expH_XY.Evolve(psi, args);
+				cout << "Folded XY from Maurizios' paper" << endl;
+			} else {
 				expH_Folded_XXZ.Evolve(psi, args);
 				cout << "Folded XXZ" << endl;
 			}
