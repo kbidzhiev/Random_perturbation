@@ -64,11 +64,7 @@ XY::XY(const SiteSet &sites,
 void XY::init(const ThreeSiteParam &param) {
 	const double Jx = param.val("Jx");
 	const double Jy = param.val("Jy");
-	double mu = param.val("h");
-	const double hL = param.val("hL");
-	const double hR = param.val("hR");
 
-	const double Delta = param.val("Delta");
 	dot = N / 2 + 1;  //Position of the "dot"
 	cout << "The dot is on site #" << dot << endl;
 	for (int j = 1; j < N-1 ; ++j) {
