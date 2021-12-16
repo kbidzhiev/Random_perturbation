@@ -62,6 +62,16 @@ private:
 	void init(const ThreeSiteParam &param);
 };
 
+//I'm creating a Folded XY 3-site Hamiltonian
+class XY {
+public:
+	int dot;
+	AutoMPO ampo;
+	XY(const SiteSet &sites, const ThreeSiteParam &param);
+private:
+	int N;
+	void init(const ThreeSiteParam &param);
+};
 
 
 

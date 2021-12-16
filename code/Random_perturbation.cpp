@@ -182,6 +182,10 @@ int main(int argc, char *argv[]) {
 	//Hamiltonian for the dynamics
 	ThreeSiteHamiltonian Ham(sites, param);
 	auto H = toMPO(Ham.ampo);
+	if(param.val("Tilted") > 0){
+		XY Ham(sites, param);
+		H = toMPO(Ham.ampo);
+	}
 
 
 	const int dot = Ham.dot;
@@ -378,7 +382,7 @@ int main(int argc, char *argv[]) {
 	const long int n_steps = param.val("T") / tau;
 	TrotterExp expH_Folded_XXZ(sites, param, -Cplx_i * tau);
 	TrotterExpXXZ expH_XXZ(sites, param, -Cplx_i * tau);
-	TrotterExpXXZ expH_XY(sites, param, -Cplx_i * tau);
+	TrotterExpXY expH_XY(sites, param, -Cplx_i * tau);
 	vector<MPO> XXZ_time_evol_vec = XXZ_time_evol(sites, param);
 
 
