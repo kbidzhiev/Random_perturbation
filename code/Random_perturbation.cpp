@@ -64,8 +64,6 @@ int main(int argc, char *argv[]) {
 
 // Preparing an initial state
 
-	ThreeSiteHamiltonian Init_H(sites, param);
-	auto H0 = toMPO(Init_H.ampo);
 	double energy_initial = 0;
 
 	if (param.longval("GroundState") == 1) {
@@ -78,6 +76,9 @@ int main(int argc, char *argv[]) {
 		psi = randomMPS(sites);
 
 		cout << "Before DMRG" << endl;
+		ThreeSiteHamiltonian Init_H(sites, param);
+		auto H0 = toMPO(Init_H.ampo);
+
 
 		cout << "Norm is = " << real(innerC(psi, psi)) << endl;
 		energy_initial = real(innerC(psi, H0, psi)); //<psi|H0|psi>
@@ -130,12 +131,9 @@ int main(int argc, char *argv[]) {
 	} else if (param.val("Tilted") > 0) {
 		cout << "initial state is  |RRR> " << endl;
 		auto initState = InitState(sites);
-		for (int i = 1; i <= N; ++i)
-			initState.set(i, "Up");
-
+		for (int i = 1; i <= N; ++i) initState.set(i, "Up");
 		psi = MPS(initState);
 		psi.noPrime();
-
 		auto AlphaGate = [&](int i, const double alpha) {
 			// U = exp[i alpha (n*s)]; |n|^2==1, s = {sx,sy,sz}
 			// n = {0,1,0}
@@ -148,10 +146,7 @@ int main(int argc, char *argv[]) {
 			Op.set(ind(2), indP(2), cos(alpha));
 			psi.setA(i, psi.A(i) * Op);
 		};
-		for (int i = 1; i <= N; ++i)
-			AlphaGate(i, param.val("Tilted"));
-
-
+		for (int i = 1; i <= N; ++i) AlphaGate(i, param.val("Tilted"));
 		auto SigmaXGate = [&](int i) {
 			auto ind = sites(i);
 			auto indP = prime(sites(i));
@@ -162,14 +157,47 @@ int main(int argc, char *argv[]) {
 			Op.set(ind(2), indP(2), 0);
 			psi.setA(i, psi.A(i) * Op);
 		};
-
 		if(param.val("Perturb") != 0)
 		{
 			cout << "spin is flipped" << endl;
 			SigmaXGate(N / 2);
 		}
-
 		psi.noPrime();
+	} else if (param.val("Tilted") > 0) {
+	cout << "initial state is  |RRR> " << endl;
+	auto initState = InitState(sites);
+	for (int i = 1; i <= N; ++i) initState.set(i, "Up");
+	psi = MPS(initState);
+	psi.noPrime();
+	auto AlphaGate = [&](int i, const double alpha) {
+		// U = exp[i alpha (n*s)]; |n|^2==1, s = {sx,sy,sz}
+		// n = {0,1,0}
+		auto ind = sites(i);
+		auto indP = prime(sites(i));
+		auto Op = ITensor(ind, indP);
+		Op.set(ind(1), indP(1), cos(alpha));
+		Op.set(ind(1), indP(2), sin(alpha));
+		Op.set(ind(2), indP(1), -sin(alpha));
+		Op.set(ind(2), indP(2), cos(alpha));
+		psi.setA(i, psi.A(i) * Op);
+	};
+	for (int i = 1; i <= N; ++i) AlphaGate(i, param.val("Tilted"));
+	auto SigmaXGate = [&](int i) {
+		auto ind = sites(i);
+		auto indP = prime(sites(i));
+		auto Op = ITensor(ind, indP);
+		Op.set(ind(1), indP(1), 0);
+		Op.set(ind(1), indP(2), 1);
+		Op.set(ind(2), indP(1), 1);
+		Op.set(ind(2), indP(2), 0);
+		psi.setA(i, psi.A(i) * Op);
+	};
+	if(param.val("Perturb") != 0)
+	{
+		cout << "spin is flipped" << endl;
+		SigmaXGate(N / 2);
+	}
+	psi.noPrime();
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
 		return 1;
@@ -182,12 +210,12 @@ int main(int argc, char *argv[]) {
 //--------------------------------------------------------------
 
 	//Hamiltonian for the dynamics
-	ThreeSiteHamiltonian Ham(sites, param);
-	auto H = toMPO(Ham.ampo);
-	if(param.val("Tilted") != 0){
+	//ThreeSiteHamiltonian Ham(sites, param);
+	//auto H = toMPO(Ham.ampo);
+	//if(param.val("Tilted") != 0){
 		XY Ham(sites, param);
-		H = toMPO(Ham.ampo);
-	}
+		auto H = toMPO(Ham.ampo);
+	//}
 
 
 	const int dot = Ham.dot;

@@ -74,7 +74,7 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("Sz") = 0.1;
 	operator[]("SVD_spec") = 0; //SVD spectrum
 	operator[]("max_bond") = 4000;  //maximum bond dimension
-	operator[]("trunc") = 1e-8;  //maximum truncation error
+	operator[]("trunc") = 1e-10;  //maximum truncation error
 	operator[]("energy") = 1e-13;  //convergence criterium on the energy
 	operator[]("sweeps") = 999;  //maximum number of sweeps in the DMRG
 
