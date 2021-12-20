@@ -807,7 +807,8 @@ int main(int argc, char *argv[]) {
 					cout << "TEBD XXZ" << endl;
 				}
 			} else if (param.val("Tilted") > 0
-						|| param.val("UDD") > 0) {
+						|| param.val("UDD") > 0
+						|| param.val("UUU") > 0) {
 				expH_XY.Evolve(psi, args);
 				cout << "Folded XY from Maurizios' paper" << endl;
 			} else {
