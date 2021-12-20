@@ -109,18 +109,24 @@ int main(int argc, char *argv[]) {
 		}
 		psi = MPS(initState);
 		psi.noPrime();
-		auto SigmaXGate = [&](int i) {
-			auto ind = sites(i);
-			auto indP = prime(sites(i));
-			auto Op = ITensor(ind, indP);
-			Op.set(ind(1), indP(1), 0);
-			Op.set(ind(1), indP(2), 1);
-			Op.set(ind(2), indP(1), 1);
-			Op.set(ind(2), indP(2), 0);
-			psi.setA(i, psi.A(i) * Op);
-		};
-		SigmaXGate(N / 2);
-		psi.noPrime();
+
+
+		if(param.val("Perturb") != 0)
+		{
+			auto SigmaXGate = [&](int i) {
+				auto ind = sites(i);
+				auto indP = prime(sites(i));
+				auto Op = ITensor(ind, indP);
+				Op.set(ind(1), indP(1), 0);
+				Op.set(ind(1), indP(2), 1);
+				Op.set(ind(2), indP(1), 1);
+				Op.set(ind(2), indP(2), 0);
+				psi.setA(i, psi.A(i) * Op);
+			};
+			SigmaXGate(N / 2);
+			psi.noPrime();
+			cout << "spin is flipped" << endl;
+		}
 
 	} else if ( param.val("UUU") > 0 ) {
 		cout << "initial state is  |RRR> " << endl;
