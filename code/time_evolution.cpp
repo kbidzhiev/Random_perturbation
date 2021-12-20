@@ -269,7 +269,6 @@ void TrotterExpXXZ::Evolve(MPS &psi, const Args &args1) {
 			psi.set(j, move(Uj1));
 			psi.set(j + 1, move(Uj2));
 			psi.set(j + 2, move(Vj2));
-
 		}
 	}
 }
@@ -331,7 +330,7 @@ void TrotterExpXY::TimeGates(const int begin, const int end,
 
 
 
-		hh += -Jz * 2 * op(sites, "Sz", j) * op(sites, "Id", j + 1)
+		hh += Jz * 2 * op(sites, "Sz", j) * op(sites, "Id", j + 1)
 						* op(sites, "Id", j + 2);
 
 		hh += J2 * 4 * op(sites, "Sz", j) * op(sites, "Sz", j + 1)
@@ -339,9 +338,9 @@ void TrotterExpXY::TimeGates(const int begin, const int end,
 
 
 		if(j == end - 2) {
-			hh += -Jz * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
+			hh += Jz * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
 								* op(sites, "Id", j + 2);
-			hh += -Jz * 2 * op(sites, "Id", j) * op(sites, "Id", j + 1)
+			hh += Jz * 2 * op(sites, "Id", j) * op(sites, "Id", j + 1)
 								* op(sites, "Sz", j + 2);
 
 			hh += J2 * 4 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
