@@ -98,8 +98,9 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("J2") = 2.0;
 	operator[]("Jx") = 1.0;
 	operator[]("Jy") = 1.0;
-	operator[]("Jz") = 0.0;
+	operator[]("Jz") = 0.5;
 	operator[]("Tilted") = 0.0;
+	operator[]("UDD") = 0;
 }
 
 

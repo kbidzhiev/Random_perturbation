@@ -97,8 +97,30 @@ int main(int argc, char *argv[]) {
 
 		//psi0 = psi; //we create two states. Psi for my time evolution, psi0 for standard one
 
-
-
+	} else if (param.val("UDD") > 0) {
+		cout << "initial state is  |UDD> " << endl;
+		auto initState = InitState(sites);
+		for (int i = 1; i <= N; ++i) {
+			if (i % 3 == 0) {
+				initState.set(i, "Up");
+			} else {
+				initState.set(i, "Dn");
+			}
+		}
+		psi = MPS(initState);
+		psi.noPrime();
+		auto SigmaXGate = [&](int i) {
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Op = ITensor(ind, indP);
+			Op.set(ind(1), indP(1), 0);
+			Op.set(ind(1), indP(2), 1);
+			Op.set(ind(2), indP(1), 1);
+			Op.set(ind(2), indP(2), 0);
+			psi.setA(i, psi.A(i) * Op);
+		};
+		SigmaXGate(N / 2);
+		psi.noPrime();
 
 	} else if ( param.val("UUU") > 0 ) {
 		cout << "initial state is  |RRR> " << endl;
@@ -764,7 +786,8 @@ int main(int argc, char *argv[]) {
 					expH_XXZ.Evolve(psi, args);
 					cout << "TEBD XXZ" << endl;
 				}
-			} else if (param.val("Tilted") > 0) {
+			} else if (param.val("Tilted") > 0
+						|| param.val("UDD") > 0) {
 				expH_XY.Evolve(psi, args);
 				cout << "Folded XY from Maurizios' paper" << endl;
 			} else {

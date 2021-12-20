@@ -64,6 +64,8 @@ XY::XY(const SiteSet &sites,
 void XY::init(const ThreeSiteParam &param) {
 	const double Jx = param.val("Jx");
 	const double Jy = param.val("Jy");
+	const double Jz = param.val("Jz");
+	const double J2 = param.val("J2");
 
 	dot = N / 2 + 1;  //Position of the "dot"
 	cout << "The dot is on site #" << dot << endl;
@@ -77,6 +79,14 @@ void XY::init(const ThreeSiteParam &param) {
 		ampo += Jx * 4 , "Sx", j, "Sx", j + 2; //
 		ampo += -Jy * 8 , "Sx", j, "Sz", j + 1, "Sx", j + 2;
 
+		ampo += Jz * 2 , "Sz", j;
+
+		ampo += J2 * 4 , "Sz", j, "Sz", j + 1; //
+		if(j == N-2){
+			ampo += Jz * 2 , "Sz", N-1;
+			ampo += Jz * 2 , "Sz", N;
+			ampo += J2 * 4 , "Sz", N-1, "Sz", N; //
+		}
 
 	}
 	// boundary terms. for loop doesn't reach j == N-1 OR N

@@ -318,6 +318,7 @@ void TrotterExpXY::TimeGates(const int begin, const int end,
 	const double Jx = param.val("Jx");
 	const double Jy = param.val("Jy");
 	const double Jz = param.val("Jz");
+	const double J2 = param.val("J2");
 	//cout << "Gates starts from " << begin << endl;
 	for (int j = begin; j < end - 1; j += step) {
 		//cout << "j = (" << j << ", " << j + 1 << ", " << j + 2 << ")"
@@ -333,11 +334,18 @@ void TrotterExpXY::TimeGates(const int begin, const int end,
 		hh += -Jz * 2 * op(sites, "Sz", j) * op(sites, "Id", j + 1)
 						* op(sites, "Id", j + 2);
 
+		hh += J2 * 4 * op(sites, "Sz", j) * op(sites, "Sz", j + 1)
+								* op(sites, "Id", j + 2);
+
+
 		if(j == end - 2) {
 			hh += -Jz * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
 								* op(sites, "Id", j + 2);
 			hh += -Jz * 2 * op(sites, "Id", j) * op(sites, "Id", j + 1)
 								* op(sites, "Sz", j + 2);
+
+			hh += J2 * 4 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
+											* op(sites, "Sz", j + 2);
 		}
 
 		auto G = expHermitian(hh, tau);
