@@ -79,7 +79,7 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("sweeps") = 999;  //maximum number of sweeps in the DMRG
 
 	operator[]("GroundState") = 0;
-	operator[]("UUU") = 0;
+	operator[]("RRR") = 0;
 	operator[]("hL") = 0; //initial magnetization_L
 	operator[]("hR") = 0; //initial magnetization_R
 	operator[]("h") = 0.0;
@@ -95,12 +95,13 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("XXZ") = 0;
 	operator[]("Delta") = 2;
 	operator[]("Perturb") = 0;
-	operator[]("J2") = 2.0;
+	operator[]("J2") = 0.0;
 	operator[]("Jx") = 1.0;
 	operator[]("Jy") = 1.0;
 	operator[]("Jz") = 0.5;
 	operator[]("Tilted") = 0.0;
 	operator[]("UDD") = 0;
+	operator[]("UUU") = 0;
 }
 
 

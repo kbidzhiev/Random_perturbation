@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
 			cout << "spin is flipped" << endl;
 		}
 
-	} else if ( param.val("UUU") > 0 ) {
+	} else if ( param.val("RRR") > 0 ) {
 		cout << "initial state is  |RRR> " << endl;
 		auto initState = InitState(sites);
 		for (int i = 1; i <= N; ++i){
@@ -192,40 +192,54 @@ int main(int argc, char *argv[]) {
 		}
 		psi.noPrime();
 	} else if (param.val("Tilted") > 0) {
-	cout << "initial state is  |RRR> " << endl;
-	auto initState = InitState(sites);
-	for (int i = 1; i <= N; ++i) initState.set(i, "Up");
-	psi = MPS(initState);
-	psi.noPrime();
-	auto AlphaGate = [&](int i, const double alpha) {
-		// U = exp[i alpha (n*s)]; |n|^2==1, s = {sx,sy,sz}
-		// n = {0,1,0}
-		auto ind = sites(i);
-		auto indP = prime(sites(i));
-		auto Op = ITensor(ind, indP);
-		Op.set(ind(1), indP(1), cos(alpha));
-		Op.set(ind(1), indP(2), sin(alpha));
-		Op.set(ind(2), indP(1), -sin(alpha));
-		Op.set(ind(2), indP(2), cos(alpha));
-		psi.setA(i, psi.A(i) * Op);
-	};
-	for (int i = 1; i <= N; ++i) AlphaGate(i, param.val("Tilted"));
-	auto SigmaXGate = [&](int i) {
-		auto ind = sites(i);
-		auto indP = prime(sites(i));
-		auto Op = ITensor(ind, indP);
-		Op.set(ind(1), indP(1), 0);
-		Op.set(ind(1), indP(2), 1);
-		Op.set(ind(2), indP(1), 1);
-		Op.set(ind(2), indP(2), 0);
-		psi.setA(i, psi.A(i) * Op);
-	};
-	if(param.val("Perturb") != 0)
-	{
-		cout << "spin is flipped" << endl;
-		SigmaXGate(N / 2);
-	}
-	psi.noPrime();
+		cout << "initial state is  |RRR> " << endl;
+		auto initState = InitState(sites);
+		for (int i = 1; i <= N; ++i)
+			initState.set(i, "Up");
+		psi = MPS(initState);
+		psi.noPrime();
+		auto AlphaGate = [&](int i, const double alpha) {
+			// U = exp[i alpha (n*s)]; |n|^2==1, s = {sx,sy,sz}
+			// n = {0,1,0}
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Op = ITensor(ind, indP);
+			Op.set(ind(1), indP(1), cos(alpha));
+			Op.set(ind(1), indP(2), sin(alpha));
+			Op.set(ind(2), indP(1), -sin(alpha));
+			Op.set(ind(2), indP(2), cos(alpha));
+			psi.setA(i, psi.A(i) * Op);
+		};
+		for (int i = 1; i <= N; ++i)
+			AlphaGate(i, param.val("Tilted"));
+		auto SigmaXGate = [&](int i) {
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Op = ITensor(ind, indP);
+			Op.set(ind(1), indP(1), 0);
+			Op.set(ind(1), indP(2), 1);
+			Op.set(ind(2), indP(1), 1);
+			Op.set(ind(2), indP(2), 0);
+			psi.setA(i, psi.A(i) * Op);
+		};
+		if (param.val("Perturb") != 0) {
+			cout << "spin is flipped" << endl;
+			SigmaXGate(N / 2);
+		}
+		psi.noPrime();
+	} else if ( param.val("UUU") > 0 ) {
+		cout << "initial state is  |uuuDuuu> " << endl;
+		auto initState = InitState(sites);
+		for (int i = 1; i <= N; ++i){
+			if(i == N/2){
+				initState.set(i, "Dn");
+			} else {
+				initState.set(i, "Up");
+			}
+		}
+		psi = MPS(initState);
+		psi.noPrime();
+
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
 		return 1;
