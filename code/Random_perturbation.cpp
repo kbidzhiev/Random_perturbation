@@ -828,8 +828,8 @@ int main(int argc, char *argv[]) {
 			cout << "E(t) - E(0) = " << energy_diff << endl;
 			cout << "Sz(t) - Sz(0) = " << sz_dif << endl;
 
-			sztotal_strm << time << "\t" << setw(16) << setfill('0') << sz_TOT
-					<< "\t" << sz_dif << "\t" << energy_diff << endl;
+			sztotal_strm << time << "\t" << setw(16) //<< setfill('0')
+					<< sz_TOT << "\t" << sz_dif << "\t" << energy_diff << endl;
 		}
 	}
 	cout << "\nTime evolution complete.\n";
