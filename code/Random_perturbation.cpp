@@ -175,6 +175,7 @@ int main(int argc, char *argv[]) {
 			psi.setA(i, psi.A(i) * Op);
 		};
 		for (int i = 1; i <= N; ++i) AlphaGate(i, param.val("Tilted"));
+
 		auto SigmaXGate = [&](int i) {
 			auto ind = sites(i);
 			auto indP = prime(sites(i));
@@ -185,12 +186,9 @@ int main(int argc, char *argv[]) {
 			Op.set(ind(2), indP(2), 0);
 			psi.setA(i, psi.A(i) * Op);
 		};
-		if(param.val("Perturb") != 0)
-		{
-			cout << "spin is flipped" << endl;
-			SigmaXGate(N / 2);
-		}
+		if(param.val("Perturb") != 0) SigmaXGate(N / 2);
 		psi.noPrime();
+
 	} else if (param.val("Tilted") > 0) {
 		cout << "initial state is  |RRR> " << endl;
 		auto initState = InitState(sites);
@@ -212,6 +210,7 @@ int main(int argc, char *argv[]) {
 		};
 		for (int i = 1; i <= N; ++i)
 			AlphaGate(i, param.val("Tilted"));
+
 		auto SigmaXGate = [&](int i) {
 			auto ind = sites(i);
 			auto indP = prime(sites(i));
@@ -222,10 +221,8 @@ int main(int argc, char *argv[]) {
 			Op.set(ind(2), indP(2), 0);
 			psi.setA(i, psi.A(i) * Op);
 		};
-		if (param.val("Perturb") != 0) {
-			cout << "spin is flipped" << endl;
-			SigmaXGate(N / 2);
-		}
+		if (param.val("Perturb") != 0) SigmaXGate(N / 2);
+
 		psi.noPrime();
 	} else if ( param.val("UUU") > 0 ) {
 		cout << "initial state is  |uuuDuuu> " << endl;
@@ -255,8 +252,8 @@ int main(int argc, char *argv[]) {
 	//ThreeSiteHamiltonian Ham(sites, param);
 	//auto H = toMPO(Ham.ampo);
 	//if(param.val("Tilted") != 0){
-		XY Ham(sites, param);
-		auto H = toMPO(Ham.ampo);
+	HamiltonianFoldedXYZ Ham(sites, param);
+	auto H = toMPO(Ham.ampo);
 	//}
 
 
@@ -454,7 +451,7 @@ int main(int argc, char *argv[]) {
 	const long int n_steps = param.val("T") / tau;
 	TrotterExp expH_Folded_XXZ(sites, param, -Cplx_i * tau);
 	TrotterExpXXZ expH_XXZ(sites, param, -Cplx_i * tau);
-	TrotterExpXY expH_XY(sites, param, -Cplx_i * tau);
+	TrotterExp_FoldedXYZ expH_XYZ(sites, param, -Cplx_i * tau);
 	vector<MPO> XXZ_time_evol_vec = XXZ_time_evol(sites, param);
 
 
@@ -809,8 +806,8 @@ int main(int argc, char *argv[]) {
 			} else if (param.val("Tilted") > 0
 						|| param.val("UDD") > 0
 						|| param.val("UUU") > 0) {
-				expH_XY.Evolve(psi, args);
-				cout << "Folded XY from Maurizios' paper" << endl;
+				expH_XYZ.Evolve(psi, args);
+				cout << "Folded XYZ from Maurizios' paper" << endl;
 			} else {
 				expH_Folded_XXZ.Evolve(psi, args);
 				cout << "Folded XXZ" << endl;

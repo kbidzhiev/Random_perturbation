@@ -51,7 +51,7 @@ private:
 };
 
 
-//I'm creating a Folded XXZ 3-site Hamiltonian
+// A dual Folded XXZ 3-site Hamiltonian
 class XXZ {
 public:
 	int dot;
@@ -62,17 +62,15 @@ private:
 	void init(const ThreeSiteParam &param);
 };
 
-//I'm creating a Folded XY 3-site Hamiltonian
-class XY {
+//Folded XYZ 3-site Hamiltonian with integrability breaking term
+class HamiltonianFoldedXYZ{
 public:
-	int dot;
 	AutoMPO ampo;
-	XY(const SiteSet &sites, const ThreeSiteParam &param);
+	HamiltonianFoldedXYZ(const SiteSet &sites, const ThreeSiteParam &param);
 private:
 	int N;
 	void init(const ThreeSiteParam &param);
 };
-
 
 
 //Trotter Gates for the time evolution of Folded_XXZ
@@ -119,8 +117,9 @@ private:
 };
 
 
-//Trotter Gates for the time evolution of XXZ
-class TrotterExpXY {
+//Trotter Gates Folded XYZ with integrability breaking term
+// https://arxiv.org/abs/2110.11322 in SIGMA repr Eq(1)
+class TrotterExp_FoldedXYZ {
 public:
 	struct TGate {
 		int i1 = 0;
@@ -130,7 +129,7 @@ public:
 		, G(G_) {
 		}
 	};
-	TrotterExpXY(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
+	TrotterExp_FoldedXYZ(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
 	void initialize(const SiteSet &sites, const ThreeSiteParam &param, const complex<double> tau);
 	void TimeGates(const int begin, const int end, const complex<double> tau,
 			const SiteSet &sites, const ThreeSiteParam &param);
@@ -138,6 +137,7 @@ public:
 private:
 	vector<TGate> gates;
 };
+
 
 
 

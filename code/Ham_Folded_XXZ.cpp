@@ -50,8 +50,9 @@ void ThreeSiteHamiltonian::init(const ThreeSiteParam &param) {
 
 
 
-// XY
-XY::XY(const SiteSet &sites,
+// Folded XYZ with integrability breaking term
+//https://arxiv.org/abs/2110.11322 in SIGMA repr Eq(1)
+HamiltonianFoldedXYZ::HamiltonianFoldedXYZ(const SiteSet &sites,
 		const ThreeSiteParam &param)
 			: ampo(sites)
 			, N(length(sites)) {
@@ -61,37 +62,24 @@ XY::XY(const SiteSet &sites,
 }
 
 //Initialize Hamiltonian parameters
-void XY::init(const ThreeSiteParam &param) {
-	const double Jx = param.val("Jx");
+void HamiltonianFoldedXYZ::init(const ThreeSiteParam &param) {
+	const double Jx = param.val("J");
 	const double Jy = param.val("Jy");
-	const double Jz = param.val("Jz");
+	const double Delta = param.val("Delta");
 	const double J2 = param.val("J2");
 
-	dot = N / 2 + 1;  //Position of the "dot"
-	cout << "The dot is on site #" << dot << endl;
-	for (int j = 1; j < N-1 ; ++j) {
-		//Strange coefficients are needed to match
-		// spin matrices and Pauli matrices -> Pauli = 2*Spin, so each matrix gives factor 2
-		// one of 1/2 comes from the projector (1-sigma_z)/2
-		// and the other is "Jacobian", i.e. 0.5 (SpSm+ SmSp) = SxSx + SySy
-
-
-		ampo += Jx * 4 , "Sx", j, "Sx", j + 2; //
-		ampo += -Jy * 8 , "Sx", j, "Sz", j + 1, "Sx", j + 2;
-
-		ampo += Jz * 2 , "Sz", j;
-
-		ampo += J2 * 4 , "Sz", j, "Sz", j + 1; //
-		if(j == N-2){
-			ampo += Jz * 2 , "Sz", N-1;
-			ampo += Jz * 2 , "Sz", N;
-			ampo += J2 * 4 , "Sz", N-1, "Sz", N; //
-		}
-
+	for (int j = 1; j < N - 1; ++j) {
+		//XYZ in sigma basis
+		ampo += Jx * 4, "Sx", j, "Sx", j + 2;
+		ampo += -Jy * 8, "Sx", j, "Sz", j + 1, "Sx", j + 2;
+		ampo += Delta * 2, "Sz", j;
+		// integrability breaking term
+		ampo += J2 * 4, "Sz", j, "Sz", j + 1;
 	}
-	// boundary terms. for loop doesn't reach j == N-1 OR N
-
-
+	// boundary terms. "for" loop doesn't reach j == N-1 and N
+	ampo += Delta * 2, "Sz", N - 1;
+	ampo += Delta * 2, "Sz", N;
+	ampo += J2 * 4, "Sz", N-1, "Sz", N;
 }
 
 

@@ -274,14 +274,12 @@ void TrotterExpXXZ::Evolve(MPS &psi, const Args &args1) {
 }
 
 
-
-
-//Trotter Gates
-TrotterExpXY::TrotterExpXY(const SiteSet &sites, const ThreeSiteParam &param,
+// Exp FoldedXYZ Trotter Gates
+TrotterExp_FoldedXYZ::TrotterExp_FoldedXYZ(const SiteSet &sites, const ThreeSiteParam &param,
 		const complex<double> tau) {
 	initialize(sites, param, tau);
 }
-void TrotterExpXY::initialize(const SiteSet &sites, const ThreeSiteParam &param,
+void TrotterExp_FoldedXYZ::initialize(const SiteSet &sites, const ThreeSiteParam &param,
 		const complex<double> tau) {
 	//const int begin = param.val("begin");
 	const int begin = 1;
@@ -289,69 +287,62 @@ void TrotterExpXY::initialize(const SiteSet &sites, const ThreeSiteParam &param,
 	const int order = param.val("TrotterOrder");
 	if (order == 1) {
 		cout << "trotter 1 scheme" << endl;
-
 		TimeGates(begin, end, tau, sites, param);
 		TimeGates(begin + 1, end, tau, sites, param);
 		TimeGates(begin + 2, end, tau, sites, param);
-
 	} else {
 		cout << "trotter 2 scheme" << endl;
-		double begin0 = begin; //this variable are needed to change operators ABC
+
+		double begin0 = begin; //these variables are needed to change operators ABC
 		double begin2 = begin + 1;
 		double begin4 = begin + 2;
 		//Trotter gates from arxiv.org/abs/1901.04974
 		// Eq. (38),(47)
-		cout << "Time evolutions " << endl;
+
+		cout << "Time evolution" << endl;
 		TimeGates(begin0, end, 0.5 * tau, sites, param); //A
 		TimeGates(begin2, end, 0.5 * tau, sites, param); //B
-		TimeGates(begin4, end, tau, sites, param); //C
+		TimeGates(begin4, end, tau, sites, param); 		//C
 		TimeGates(begin2, end, 0.5 * tau, sites, param); //B
 		TimeGates(begin0, end, 0.5 * tau, sites, param); //A
+
 	}
 }
 
-void TrotterExpXY::TimeGates(const int begin, const int end,
+void TrotterExp_FoldedXYZ::TimeGates(const int begin, const int end,
 		const complex<double> tau, const SiteSet &sites,
 		const ThreeSiteParam &param) {
 	const int step = 3;
-	const double Jx = param.val("Jx");
+	const double Jx = param.val("J");
 	const double Jy = param.val("Jy");
-	const double Jz = param.val("Jz");
+	const double Delta = param.val("Delta");
 	const double J2 = param.val("J2");
+
 	//cout << "Gates starts from " << begin << endl;
 	for (int j = begin; j < end - 1; j += step) {
-		//cout << "j = (" << j << ", " << j + 1 << ", " << j + 2 << ")"
-		//		<< endl;
-		//this part act on real sites
-		auto hh = Jx * 4 * op(sites, "Sx", j) * op(sites, "Id", j + 1)
-				* op(sites, "Sx", j + 2);
-		hh += -Jy * 8 * op(sites, "Sx", j) * op(sites, "Sz", j + 1)
-				* op(sites, "Sx", j + 2);
+		auto X_0 = op(sites, "Sx", j);
+		auto Z_0 = op(sites, "Sz", j);
+		auto I_1 = op(sites, "Id", j + 1);
+		auto Z_1 = op(sites, "Sz", j + 1);
+		auto X_2 = op(sites, "Sx", j + 2);
+		auto I_2 = op(sites, "Id", j + 2);
 
+		auto hh = Jx * 4 * X_0 * I_1 * X_2;
+		hh += -Jy * 8 * X_0 * Z_1 * X_2;
+		hh += Delta * 2 * Z_0 * I_1 * I_2;
+		hh += J2 * 4 * Z_0 * Z_1 * I_2;
 
-
-		hh += Jz * 2 * op(sites, "Sz", j) * op(sites, "Id", j + 1)
-						* op(sites, "Id", j + 2);
-
-		hh += J2 * 4 * op(sites, "Sz", j) * op(sites, "Sz", j + 1)
-								* op(sites, "Id", j + 2);
-
-
-		if(j == end - 2) {
-			hh += Jz * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
-								* op(sites, "Id", j + 2);
-			hh += Jz * 2 * op(sites, "Id", j) * op(sites, "Id", j + 1)
-								* op(sites, "Sz", j + 2);
-
-			hh += J2 * 4 * op(sites, "Id", j) * op(sites, "Sz", j + 1)
-											* op(sites, "Sz", j + 2);
+		if (j == N-2){
+			hh += Delta * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1) * op(sites, "Id", j + 2);
+			hh += Delta * 2 * op(sites, "Id", j) * op(sites, "Id", j + 1) * op(sites, "Sz", j + 2);
+			hh += J2 * 4 * op(sites, "Id", j) * op(sites, "Sz", j + 1) * op(sites, "Sz", j + 2);
 		}
 
 		auto G = expHermitian(hh, tau);
 		gates.emplace_back(j, move(G));
 	}
 }
-void TrotterExpXY::Evolve(MPS &psi, const Args &args) {
+void TrotterExp_FoldedXYZ::Evolve(MPS &psi, const Args &args) {
 	for (auto &gate : gates) {
 		auto j = gate.i1;
 		auto &G = gate.G;
@@ -365,12 +356,13 @@ void TrotterExpXY::Evolve(MPS &psi, const Args &args) {
 					{ siteIndex(psi, j), leftLinkIndex(psi, j) }, args);
 			auto indR = commonIndex(Uj1, Vj1);
 			auto [Uj2, Vj2] = factor(Vj1, { siteIndex(psi, j + 1), indR }, args);
-			psi.set(j, Uj1); // instead of copying I can move here??
+			psi.set(j, Uj1);
 			psi.set(j + 1, Uj2);
 			psi.set(j + 2, Vj2);
-
 		}
 	}
 }
+
+
 
 
