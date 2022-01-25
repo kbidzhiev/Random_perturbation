@@ -65,6 +65,7 @@ private:
 //Folded XYZ 3-site Hamiltonian with integrability breaking term
 class HamiltonianFoldedXYZ{
 public:
+	int dot;
 	AutoMPO ampo;
 	HamiltonianFoldedXYZ(const SiteSet &sites, const ThreeSiteParam &param);
 private:

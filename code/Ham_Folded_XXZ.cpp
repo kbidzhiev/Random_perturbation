@@ -34,7 +34,6 @@ void ThreeSiteHamiltonian::init(const ThreeSiteParam &param) {
 		ampo += J * -8 * 0.25, "S+", j, "Sz", j + 1, "S-", j + 2;
 		ampo += J * -8 * 0.25, "S-", j, "Sz", j + 1, "S+", j + 2;
 
-
 		if (j <= dot) {
 			mu = hL;
 		} else {
@@ -67,6 +66,7 @@ void HamiltonianFoldedXYZ::init(const ThreeSiteParam &param) {
 	const double Jy = param.val("Jy");
 	const double Delta = param.val("Delta");
 	const double J2 = param.val("J2");
+	dot = N / 2 + 1;  //Position of the "dot"
 
 	for (int j = 1; j < N - 1; ++j) {
 		//XYZ in sigma basis
