@@ -84,7 +84,6 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("hR") = 0; //initial magnetization_R
 	operator[]("h") = 0.0;
 	operator[]("rho") = 0.0;
-	operator[]("n") = 1;
 	operator[]("Q1Profile") = 0.1; // energy and current profile
 	operator[]("Q2Profile") = 0.1;
 	operator[]("Entropy") = 1; //entanglement entropy p*log*p between left and right parts of system
