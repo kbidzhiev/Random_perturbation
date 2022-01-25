@@ -332,7 +332,7 @@ void TrotterExp_FoldedXYZ::TimeGates(const int begin, const int end,
 		hh += Delta * 2 * Z_0 * I_1 * I_2;
 		hh += J2 * 4 * Z_0 * Z_1 * I_2;
 
-		if (j == N-2){
+		if (j == end-2){
 			hh += Delta * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1) * op(sites, "Id", j + 2);
 			hh += Delta * 2 * op(sites, "Id", j) * op(sites, "Id", j + 1) * op(sites, "Sz", j + 2);
 			hh += J2 * 4 * op(sites, "Id", j) * op(sites, "Sz", j + 1) * op(sites, "Sz", j + 2);
