@@ -26,36 +26,19 @@ void TrotterExp::initialize(const SiteSet &sites, const ThreeSiteParam &param,
 
 	} else {
 		cout << "trotter 2 scheme" << endl;
-		/*
-		 double a1 = 1. / 6;		// more precise arrpoximation coefficients
-		 double a2 = 1 - 2. * a1;
-		 double b1 = (3 - sqrt(3)) / 6.;
-		 double b2 = 1. / 2 - b1;
-		 double c1 = 1. / 2;
-		 */
+
 		double begin0 = begin; //this variable are needed to change operators ABC
 		double begin2 = begin + 1;
 		double begin4 = begin + 2;
 		//Trotter gates from arxiv.org/abs/1901.04974
 		// Eq. (38),(47)
-
 		cout << "Time evolutions " << endl;
 		TimeGates(begin0, end, 0.5 * tau, sites, param); //A
 		TimeGates(begin2, end, 0.5 * tau, sites, param); //B
 		TimeGates(begin4, end, tau, sites, param); //C
 		TimeGates(begin2, end, 0.5 * tau, sites, param); //B
 		TimeGates(begin0, end, 0.5 * tau, sites, param); //A
-		/*
-		 TimeGates(begin0, end, a1 * tau, sites, param); //A
-		 TimeGates(begin2, end, b1 * tau, sites, param); //B
-		 TimeGates(begin4, end, c1 * tau, sites, param); //C
-		 TimeGates(begin2, end, b2 * tau, sites, param); //B
-		 TimeGates(begin0, end, a2 * tau, sites, param); //A
-		 TimeGates(begin2, end, b2 * tau, sites, param); //B
-		 TimeGates(begin4, end, c1 * tau, sites, param); //C
-		 TimeGates(begin2, end, b1 * tau, sites, param); //B
-		 TimeGates(begin0, end, a1 * tau, sites, param); //A
-		 */
+
 	}
 }
 
@@ -181,23 +164,6 @@ void TrotterExpXXZ::initialize(const SiteSet &sites, const ThreeSiteParam &param
 		TimeGates(begin, end, tau, sites, param);
 		TimeGates(begin + 1, end, tau, sites, param);
 	} else {
-//		cout << "trotter 2 scheme" << endl;
-//		double a1 = (3.-sqrt(3.))/6.0;		// more precise arrpoximation coefficients
-//		double a2 = 1.0 - 2.0 * a1;
-//		double b1 = 0.5;
-//
-//		double begin0 = begin; //this variable are needed to change operators A and B
-//		double begin1 = begin + 1;
-//		//Trotter gates from arxiv.org/abs/1901.04974
-//		// Eq. (21)
-//		cout << "Time evolutions " << endl;
-//		TimeGates(begin0, end, a1 * tau, sites, param); //a1
-//		TimeGates(begin1, end, b1 * tau, sites, param); //b1
-//		TimeGates(begin0, end, a2 * tau, sites, param); //a2
-//		TimeGates(begin1, end, b1 * tau, sites, param); //b1
-//		TimeGates(begin0, end, a1 * tau, sites, param); //a1
-
-
 		cout << "trotter 2 scheme" << endl;
 		double begin0 = begin; //this variable are needed to change operators ABC
 		double begin2 = begin + 1;
@@ -211,7 +177,6 @@ void TrotterExpXXZ::initialize(const SiteSet &sites, const ThreeSiteParam &param
 		TimeGates(begin4, end, tau, sites, param); //C
 		TimeGates(begin2, end, 0.5 * tau, sites, param); //B
 		TimeGates(begin0, end, 0.5 * tau, sites, param); //A
-
 	}
 }
 
@@ -328,9 +293,9 @@ void TrotterExp_FoldedXYZ::TimeGates(const int begin, const int end,
 		auto I_2 = op(sites, "Id", j + 2);
 
 		auto hh = Jx * 4 * X_0 * I_1 * X_2;
-		hh += -Jy * 8 * X_0 * Z_1 * X_2;
-		hh += Delta * 2 * Z_0 * I_1 * I_2;
-		hh += J2 * 4 * Z_0 * Z_1 * I_2;
+		hh += 	 -Jy * 8 * X_0 * Z_1 * X_2;
+		hh +=  Delta * 2 * Z_0 * I_1 * I_2;
+		hh += 	  J2 * 4 * Z_0 * Z_1 * I_2;
 
 		if (j == end-2){
 			hh += Delta * 2 * op(sites, "Id", j) * op(sites, "Sz", j + 1) * op(sites, "Id", j + 2);
