@@ -69,6 +69,9 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	//and their default values
 	operator[]("N") = 10; //Length of the chain
 	operator[]("J") = 1.0;
+	operator[]("J2") = 0.0;
+	operator[]("Jy") = 1.0;
+
 	operator[]("tau") = 0.02;  //time step for the unitary evolution
 	operator[]("T") = 2;  //Total (final) time
 	operator[]("Sz") = 0.1;
@@ -92,12 +95,9 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("TrotterOrderXXZ") = 0;
 	operator[]("TrotterOrder") = 2;
 	operator[]("XXZ") = 0;
-	operator[]("Delta") = 2;
+	operator[]("Delta") = 0.5;
 	operator[]("Perturb") = 0;
-	operator[]("J2") = 0.0;
-	operator[]("Jx") = 1.0;
-	operator[]("Jy") = 1.0;
-	operator[]("Jz") = 0.5;
+
 	operator[]("Tilted") = 0.0;
 	operator[]("UDD") = 0;
 	operator[]("UUU") = 0;
