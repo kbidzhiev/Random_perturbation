@@ -278,7 +278,7 @@ int main(int argc, char *argv[]) {
 	{
 		sztotal_strm.open("Sz_total.dat", mode);
 		sztotal_strm.precision(15);
-		sztotal_strm << "#time \t  <Sz_total>  \t <Sz_total - sz_min>\n";
+		sztotal_strm << "#time \t  <Sz_total>  \t <Sz_total - sz_min> \t <Energy(t) - Energy0 >\n";
 	}
 	double dt = param.val("Loschmidt");
 	if (dt != 0) { //Loschmidt echo
@@ -814,21 +814,22 @@ int main(int argc, char *argv[]) {
 			}
 			psi.orthogonalize(args);
 
-
-
 			double sz_TOT = 0;
 			for (int i = 1; i <= N; i++) {
 				sz_TOT += Sz(psi, sites, i);
 			}
-			sztotal_strm << time << "\t" << setw(16) << setfill('0')
-					<< sz_TOT << "\t" << sz_TOT - sz_total_initial << endl;
+			double sz_dif = sz_TOT - sz_total_initial;
 
 			double energy = real(innerC(psi, H, psi));
+			double energy_diff = energy - energy_initial;
 			cout << "max bond dim = " << maxLinkDim(psi) << endl;
 			//cout << "Norm = " << real(innerC(psi, psi)) << endl;
 			cout << "Energy = " << energy << endl;
-			cout << "E(t) - E(0) = " << (energy - energy_initial) << endl;
-			cout << "Sz(t) - Sz(0) = " << (sz_TOT - sz_total_initial) << endl;
+			cout << "E(t) - E(0) = " << energy_diff << endl;
+			cout << "Sz(t) - Sz(0) = " << sz_dif << endl;
+
+			sztotal_strm << time << "\t" << setw(16) << setfill('0') << sz_TOT
+					<< "\t" << sz_dif << "\t" << energy_diff << endl;
 		}
 	}
 	cout << "\nTime evolution complete.\n";
