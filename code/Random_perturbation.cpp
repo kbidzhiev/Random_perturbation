@@ -478,7 +478,7 @@ int main(int argc, char *argv[]) {
 					}
 					if (n < n_steps)
 						spec << endl << endl;
-				}i
+				}
 			}
 		}
 
