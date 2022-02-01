@@ -100,6 +100,7 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 
 	operator[]("Tilted") = 0.0;
 	operator[]("UDD") = 0;
+	operator[]("UDDD") = 0;
 	operator[]("UUU") = 0;
 }
 
