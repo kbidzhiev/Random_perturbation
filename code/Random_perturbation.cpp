@@ -798,6 +798,7 @@ int main(int argc, char *argv[]) {
 				}
 			} else if (param.val("Tilted") > 0
 						|| param.val("UDD") > 0
+						|| param.val("UDDD") > 0
 						|| param.val("UUU") > 0) {
 				expH_XYZ.Evolve(psi, args);
 				cout << "Folded XYZ from Maurizios' paper" << endl;
