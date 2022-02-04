@@ -230,6 +230,15 @@ int main(int argc, char *argv[]) {
 		psi = MPS(initState);
 		psi.noPrime();
 
+	} else if (param.val("Len") > 0) {
+		cout << "initial state is  |uuu> " << endl;
+		auto initState = InitState(sites);
+		for (int i = 1; i <= N; ++i) {
+			initState.set(i, "Up");
+		}
+		psi = MPS(initState);
+		psi.noPrime();
+
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
 		return 1;
@@ -797,6 +806,7 @@ int main(int argc, char *argv[]) {
 					cout << "TEBD XXZ" << endl;
 				}
 			} else if (param.val("Tilted") > 0
+						|| param.val("Len") > 0
 						|| param.val("UDD") > 0
 						|| param.val("UDDD") > 0
 						|| param.val("UUU") > 0) {

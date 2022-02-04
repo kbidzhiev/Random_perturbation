@@ -102,6 +102,8 @@ ThreeSiteParam::ThreeSiteParam() { //Constructor
 	operator[]("UDD") = 0;
 	operator[]("UDDD") = 0;
 	operator[]("UUU") = 0;
+	operator[]("Len") = 0;
+
 }
 
 
