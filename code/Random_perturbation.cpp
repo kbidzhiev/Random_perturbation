@@ -877,7 +877,6 @@ int main(int argc, char *argv[]) {
 					cout << "TEBD XXZ" << endl;
 				}
 			} else if (param.val("Tilted") > 0
-						|| param.val("Len") > 0
 						|| param.val("UDD") > 0
 						|| param.val("UDDD") > 0
 						|| param.val("UUU") > 0
