@@ -244,20 +244,20 @@ int main(int argc, char *argv[]) {
 		double coshd = cosh(beta)/exp(beta);
 		double sinhd = sinh(beta)/exp(beta);
 
-		auto comInd = Index(2, "Link"); // define a common index
+		auto ind = Index(2, "Link"); // define a common index
 
 		for (int i = 1; i <= N; i++) { // run over the chain of size N
 			auto s = sites(i);
 			if (i == 1) {
 				auto b = Index(2, "Link");
 				auto A = ITensor(s, b);
-				// here set the values of the matrix elements of A
+
 				A.set(s(1), b(1), sqrt(coshd));
 				A.set(s(1), b(2), sqrt(sinhd));
 				A.set(s(2), b(1), sqrt(coshd));
 				A.set(s(2), b(2), -sqrt(sinhd));
 				psi.set(i, A);
-				comInd = b; // set the common index to the right index of A
+				ind = b;
 			}
 			if (i > 1 && i < N) {
 				auto a = comInd;
@@ -275,21 +275,18 @@ int main(int argc, char *argv[]) {
 				A.set(s(2), a(2), b(2), sinhd);
 
 				psi.set(i, A);
-				comInd = b; // set the common index to the right index of A
+				ind = b;
 			}
 			if (i == N) {
-				auto a = comInd;
+				auto a = ind;
 				auto A = ITensor(s, a);
-				// here set the values of the matrix elements of A
 				A.set(s(1), a(1), sqrt(coshd));
 				A.set(s(1), a(2), sqrt(sinhd));
 				A.set(s(2), a(1), sqrt(coshd));
 				A.set(s(2), a(2), -sqrt(sinhd));
 				psi.set(i, A);
 			}
-
-
-		} // end of for over sites
+		}
 
 
 
