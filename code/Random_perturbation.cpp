@@ -260,7 +260,7 @@ int main(int argc, char *argv[]) {
 				ind = b;
 			}
 			if (i > 1 && i < N) {
-				auto a = comInd;
+				auto a = ind;
 				auto b = Index(2, "Link");
 				auto A = ITensor(s, a, b);
 
@@ -304,8 +304,9 @@ int main(int argc, char *argv[]) {
 			};
 			SigmaXGate(N / 2);
 		}
-		psi.noPrime();
 
+		psi.noPrime();
+		psi.orthogonalize(args);
 
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
