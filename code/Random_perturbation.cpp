@@ -230,14 +230,85 @@ int main(int argc, char *argv[]) {
 		psi = MPS(initState);
 		psi.noPrime();
 
-	} else if (param.val("Len") > 0) {
-		cout << "initial state is  |uuu> " << endl;
+
+	} else if (param.val("Beta") > 0) {
+		cout << "initial state is  |Exp[beta sum s_i*s_{i+1}]  > " << endl;
 		auto initState = InitState(sites);
-		for (int i = 1; i <= N; ++i) {
+		for (int i = 1; i <= N; ++i)
 			initState.set(i, "Up");
-		}
 		psi = MPS(initState);
 		psi.noPrime();
+
+
+		double beta = param.val("Beta");
+		double coshd = cosh(beta)/exp(beta);
+		double sinhd = sinh(beta)/exp(beta);
+
+		auto comInd = Index(2, "Link"); // define a common index
+
+		for (int i = 1; i <= N; i++) { // run over the chain of size N
+			auto s = sites(i);
+			if (i == 1) {
+				auto b = Index(2, "Link");
+				auto A = ITensor(s, b);
+				// here set the values of the matrix elements of A
+				A.set(s(1), b(1), sqrt(coshd));
+				A.set(s(1), b(2), sqrt(sinhd));
+				A.set(s(2), b(1), sqrt(coshd));
+				A.set(s(2), b(2), -sqrt(sinhd));
+				psi.set(i, A);
+				comInd = b; // set the common index to the right index of A
+			}
+			if (i > 1 && i < N) {
+				auto a = comInd;
+				auto b = Index(2, "Link");
+				auto A = ITensor(s, a, b);
+
+				A.set(s(1), a(1), b(1), coshd);
+				A.set(s(1), a(1), b(2), sqrt(sinhd * coshd));
+				A.set(s(1), a(2), b(1), sqrt(sinhd * coshd));
+				A.set(s(1), a(2), b(2), sinhd);
+
+				A.set(s(2), a(1), b(1), coshd);
+				A.set(s(2), a(1), b(2), -sqrt(sinhd * coshd));
+				A.set(s(2), a(2), b(1), -sqrt(sinhd * coshd));
+				A.set(s(2), a(2), b(2), sinhd);
+
+				psi.set(i, A);
+				comInd = b; // set the common index to the right index of A
+			}
+			if (i == N) {
+				auto a = comInd;
+				auto A = ITensor(s, a);
+				// here set the values of the matrix elements of A
+				A.set(s(1), a(1), sqrt(coshd));
+				A.set(s(1), a(2), sqrt(sinhd));
+				A.set(s(2), a(1), sqrt(coshd));
+				A.set(s(2), a(2), -sqrt(sinhd));
+				psi.set(i, A);
+			}
+
+
+		} // end of for over sites
+
+
+
+
+		if (param.val("Perturb") != 0){
+			auto SigmaXGate = [&](int i) {
+				auto ind = sites(i);
+				auto indP = prime(sites(i));
+				auto Op = ITensor(ind, indP);
+				Op.set(ind(1), indP(1), 0);
+				Op.set(ind(1), indP(2), 1);
+				Op.set(ind(2), indP(1), 1);
+				Op.set(ind(2), indP(2), 0);
+				psi.setA(i, psi.A(i) * Op);
+			};
+			SigmaXGate(N / 2);
+		}
+		psi.noPrime();
+
 
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
@@ -809,7 +880,8 @@ int main(int argc, char *argv[]) {
 						|| param.val("Len") > 0
 						|| param.val("UDD") > 0
 						|| param.val("UDDD") > 0
-						|| param.val("UUU") > 0) {
+						|| param.val("UUU") > 0
+						|| param.val("Beta") > 0) {
 				expH_XYZ.Evolve(psi, args);
 				cout << "Folded XYZ from Maurizios' paper" << endl;
 			} else {
