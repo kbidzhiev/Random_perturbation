@@ -232,64 +232,69 @@ int main(int argc, char *argv[]) {
 
 
 	} else if (param.val("Beta") > 0) {
-		cout << "initial state is  |Exp[beta sum s_i*s_{i+1}]  > " << endl;
+		cout << "initial state is  |Exp[0.5*beta sum s_i*s_{i+1}]  > " << endl;
 		auto initState = InitState(sites);
 		for (int i = 1; i <= N; ++i)
 			initState.set(i, "Up");
 		psi = MPS(initState);
 		psi.noPrime();
 
-
-		double beta = param.val("Beta");
+		double beta = 0.5 * param.val("Beta");
 		double coshd = cosh(beta)/exp(beta);
 		double sinhd = sinh(beta)/exp(beta);
 
 		auto ind = Index(2, "Link"); // define a common index
-
-		for (int i = 1; i <= N; i++) { // run over the chain of size N
+		for (int i = 1; i <= N; i++) {
 			auto s = sites(i);
+			auto a = ind;
+			auto b = Index(2, "Link");
 			if (i == 1) {
-				auto b = Index(2, "Link");
 				auto A = ITensor(s, b);
-
 				A.set(s(1), b(1), sqrt(coshd));
 				A.set(s(1), b(2), sqrt(sinhd));
 				A.set(s(2), b(1), sqrt(coshd));
 				A.set(s(2), b(2), -sqrt(sinhd));
 				psi.set(i, A);
-				ind = b;
-			}
-			if (i > 1 && i < N) {
-				auto a = ind;
-				auto b = Index(2, "Link");
-				auto A = ITensor(s, a, b);
-
-				A.set(s(1), a(1), b(1), coshd);
-				A.set(s(1), a(1), b(2), sqrt(sinhd * coshd));
-				A.set(s(1), a(2), b(1), sqrt(sinhd * coshd));
-				A.set(s(1), a(2), b(2), sinhd);
-
-				A.set(s(2), a(1), b(1), coshd);
-				A.set(s(2), a(1), b(2), -sqrt(sinhd * coshd));
-				A.set(s(2), a(2), b(1), -sqrt(sinhd * coshd));
-				A.set(s(2), a(2), b(2), sinhd);
-
-				psi.set(i, A);
-				ind = b;
-			}
-			if (i == N) {
-				auto a = ind;
+			} else if (i == N) {
 				auto A = ITensor(s, a);
 				A.set(s(1), a(1), sqrt(coshd));
 				A.set(s(1), a(2), sqrt(sinhd));
 				A.set(s(2), a(1), sqrt(coshd));
 				A.set(s(2), a(2), -sqrt(sinhd));
 				psi.set(i, A);
+			} else {
+				auto A = ITensor(s, a, b);
+				A.set(s(1), a(1), b(1), coshd);
+				A.set(s(1), a(1), b(2), sqrt(sinhd * coshd));
+				A.set(s(1), a(2), b(1), sqrt(sinhd * coshd));
+				A.set(s(1), a(2), b(2), sinhd);
+				A.set(s(2), a(1), b(1), coshd);
+				A.set(s(2), a(1), b(2), -sqrt(sinhd * coshd));
+				A.set(s(2), a(2), b(1), -sqrt(sinhd * coshd));
+				A.set(s(2), a(2), b(2), sinhd);
+				psi.set(i, A);
 			}
+			ind = b;
+		}
+		psi.orthogonalize();
+		psi /= norm(psi);
+
+
+		auto HadamarGate = [&](int i) {
+			auto ind = sites(i);
+			auto indP = prime(sites(i));
+			auto Had = ITensor(ind, indP);
+			Had.set(ind(1), indP(1), ISqrt2);
+			Had.set(ind(1), indP(2), ISqrt2);
+			Had.set(ind(2), indP(1), ISqrt2);
+			Had.set(ind(2), indP(2), -ISqrt2);
+			psi.setA(i, psi.A(i) * Had);
+		};
+		for (int i = 1; i <= N; ++i) {
+			HadamarGate(i);
 		}
 
-
-
+		psi.noPrime();
 
 		if (param.val("Perturb") != 0){
 			auto SigmaXGate = [&](int i) {
@@ -306,7 +311,6 @@ int main(int argc, char *argv[]) {
 		}
 
 		psi.noPrime();
-		psi.orthogonalize(args);
 
 	}else {
 		cout << "Choose: GroundState, Neel, DomainWall,Impurity, Jammed = 1" << endl;
