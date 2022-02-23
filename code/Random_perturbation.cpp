@@ -307,7 +307,7 @@ int main(int argc, char *argv[]) {
 				Op.set(ind(2), indP(2), 0);
 				psi.setA(i, psi.A(i) * Op);
 			};
-			SigmaXGate(N / 2);
+			SigmaXGate(N / 2 + 1);
 		}
 
 		psi.noPrime();
